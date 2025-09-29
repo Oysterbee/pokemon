@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.pokedex-container {
+  width: 90%;
+  max-width: 450px;
+  background-color: #34495e;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  text-align: center;
+  transition: background-color 0.5s ease-in-out; 
+}
+      
+.pokedex-header {
+  color: #000000;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.search-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+#pokeId {
+  flex-grow: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  font-size: 1rem;
+  outline: none;
+}
+
+#pokeId::placeholder {
+  color: #7f8c8d;
+}
+
+#pokeBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f39c12;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#pokeBtn:hover {
+  background-color: #e67e22;
+}
+
+.poke-info {
+  min-height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #2c3e50;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.placeholder-text, .error-message, .loading-message {
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+.pokemon-card {
+  width: 100%;
+}
+
+.pokemon-name {
+  font-size: 1.8rem;
+  color: #3498db;
+  margin: 0;
+}
+
+.pokemon-eng-name {
+  font-size: 1rem;
+  color: #bdc3c7;
+  margin: 0 0 1rem;
+}
+
+.pokemon-image-container {
+  background-color: #ecf0f1;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pokemon-image-container img {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  image-rendering: pixelated; 
+}
+
+.pokemon-stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  background-color: #34495e;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.stat-item span {
+  font-weight: bold;
+  color: #3498db;
+  text-transform: capitalize;
+}
+
+.pokemon-audio {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.pokemon-types {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.type-badge {
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 12px;
+  color: #fff;
+}

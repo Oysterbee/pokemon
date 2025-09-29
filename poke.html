@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PokéDex</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="pokedex-container">
+      <header class="pokedex-header">
+        <h1>포켓몬 도감</h1>
+      </header>
+      <div class="search-section">
+        <input id="pokeId" type="number" min="1" placeholder="포켓몬 ID 입력" />
+        <button id="pokeBtn">검색</button>
+      </div>
+      <div id="pokeBox" class="poke-info">
+        <p class="placeholder-text">포켓몬 ID를 입력하고 검색하세요!</p>
+      </div>
+    </div>
+
+    <script>
+      const statNamesKo = {
+        hp: 'HP',
+        attack: '공격력',
+        defense: '방어력',
+        'special-attack': '특수공격',
+        'special-defense': '특수방어',
+        speed: '스피드',
+      };
+
+      const typeColors = {
+        normal: '#A8A77A',
+        fire: '#EE8130',
+        water: '#6390F0',
+        electric: '#F7D02C',
+        grass: '#7AC74C',
+        ice: '#96D9D6',
+        fighting: '#C22E28',
+        poison: '#A33EA1',
+        ground: '#E2BF65',
+        flying: '#A98FF3',
+        psychic: '#F95587',
+        bug: '#A6B91A',
+        rock: '#B6A136',
+        ghost: '#735797',
+        dragon: '#6F35FC',
+        steel: '#B7B7CE',
+        dark: '#705746',
+        fairy: '#D685AD',
+      };
+
+      async function getPokemon(id) {
+        if (!id) {
+          document.querySelector("#pokeBox").innerHTML = `<p class="error-message">포켓몬 ID를 입력해주세요.</p>`;
+          return;
+        }
+
+        document.querySelector("#pokeBox").innerHTML = `<p class="loading-message">포켓몬을 불러오는 중...</p>`;
+        
+        try {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            if (!response.ok) {
+                throw new Error('포켓몬을 찾을 수 없습니다!');
+            }
+            const data = await response.json();
+    
+            const response2 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+            const data2 = await response2.json();
+    
+            const koName = data2.names.find((v) => v.language.name === "ko")?.name || data.name;
+    
+            const poke = {
+                engName: data.name,
+                koName,
+                shape: data.sprites.front_default,
+                sound: data.cries.latest,
+                stats: data.stats,
+                types: data.types.map(type => type.type.name)
+            };
+    
+            localStorage.setItem("recent", JSON.stringify(poke));
+            renderPoke(poke);
+        } catch (error) {
+            document.querySelector("#pokeBox").innerHTML = `<p class="error-message">${error.message}</p>`;
+        }
+      }
+
+      const pokeBtn = document.querySelector("#pokeBtn");
+      const pokeId = document.querySelector("#pokeId");
+      pokeBtn.addEventListener("click", () => getPokemon(pokeId.value));
+      pokeId.addEventListener("keydown", (e) => {
+        if (e.key === 'Enter') {
+          getPokemon(pokeId.value);
+        }
+      });
+
+      function renderPoke({ engName, koName, shape, sound, stats, types }) {
+        const pokeBox = document.querySelector("#pokeBox");
+        const pokedexContainer = document.querySelector(".pokedex-container");
+        
+        const mainType = types[0];
+        const backgroundColor = typeColors[mainType] || '#34495e';
+        pokedexContainer.style.backgroundColor = backgroundColor;
+
+        const statsHtml = stats.map(stat => {
+          const statNameEng = stat.stat.name;
+          const statNameKo = statNamesKo[statNameEng] || statNameEng;
+          const baseStat = stat.base_stat;
+          
+          return `
+            <div class="stat-item">
+              <span>${statNameKo}</span>: ${baseStat}
+            </div>
+          `;
+        }).join('');
+
+        const typesHtml = types.map(type => {
+            const color = typeColors[type] || '#777';
+            return `<div class="type-badge" style="background-color: ${color};">${type}</div>`;
+        }).join('');
+
+        pokeBox.innerHTML = `
+          <div class="pokemon-card">
+            <h4 class="pokemon-name">${koName}</h4>
+            <h5 class="pokemon-eng-name">(${engName})</h5>
+            <div class="pokemon-image-container">
+                <img src="${shape}" alt="${engName}">
+            </div>
+            <div class="pokemon-types">${typesHtml}</div>
+            <div class="pokemon-stats">${statsHtml}</div>
+            <audio src="${sound}" controls class="pokemon-audio"></audio>
+          </div>
+        `;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const rawRecentPoke = localStorage.getItem("recent");
+        if (!rawRecentPoke) return;
+        const recentPoke = JSON.parse(rawRecentPoke);
+        renderPoke(recentPoke);
+      });
+    </script>
+  </body>
+</html>
